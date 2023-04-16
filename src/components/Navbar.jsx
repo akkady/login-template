@@ -15,7 +15,6 @@ import {
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
-import { UserContext } from "../contexts/UserContext";
 
 const products = [
   {
@@ -58,10 +57,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const Navbar = () => {
-  const { setLoged } = useContext(UserContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const logOut = () => setLoged(false);
 
   return (
     <header className="bg-white shadow-md">
@@ -70,7 +66,7 @@ const Navbar = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5">
+          <Link to="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
               className="h-8 w-auto"
@@ -113,7 +109,6 @@ const Navbar = () => {
           <Link
             to="/login"
             className="text-sm font-semibold leading-6 text-gray-900"
-            onClick={logOut}
           >
             Log out <span aria-hidden="true">&rarr;</span>
           </Link>
@@ -176,30 +171,30 @@ const Navbar = () => {
                     </>
                   )}
                 </Disclosure>
+
                 <Link
                   to="/"
                   className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Home
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  to="/dashboard"
                   className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
+                  Dashboard
+                </Link>
+                <Link
+                  to="/about"
                   className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Company
-                </a>
+                  About
+                </Link>
               </div>
               <div className="py-6">
                 <Link
                   to="/login"
                   className="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  onClick={logOut}
                 >
                   Log out
                 </Link>
