@@ -3,13 +3,9 @@ import Navbar from "./Navbar";
 
 const Home = () => {
   return (
-    <>
-      <Navbar />
-      <div className="text-center text-blueColor text- w-full my-10">
-        <h1>AMine house</h1>
-        <Outlet />
-      </div>
-    </>
+    <div className="text-center text-blueColor text- w-full my-10">
+      <h1>Home</h1>
+    </div>
   );
 };
 
