@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LockClosedIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -8,12 +8,16 @@ import useAuth from "../hooks/useAuth";
 import jwtDecode from "jwt-decode";
 
 const Login = () => {
-  const { setAuth } = useAuth();
+  const { setAuth, setPersist, persist } = useAuth();
   const [alert, setAlert] = useState({ show: false, msg: "" });
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+
+  const toggleRememberMe = (e) => {
+    setPersist(e?.target?.checked);
+  };
 
   const logIn = (data) => {
     UserService.login(data)
@@ -38,6 +42,9 @@ const Login = () => {
         });
       });
   };
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -168,6 +175,8 @@ const Login = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <input
+                        defaultChecked={persist}
+                        onChange={toggleRememberMe}
                         id="remember-me"
                         name="remember-me"
                         type="checkbox"

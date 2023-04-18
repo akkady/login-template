@@ -8,38 +8,39 @@ const useAxiosPrivate = () => {
   const { auth } = useAuth();
 
   useEffect(() => {
-    const requestInterceptor = axiosPrivate.interceptors.request.use(
+    const requestIntercept = axiosPrivate.interceptors.request.use(
       (config) => {
-        console.log("requesting ...");
-        if (!config?.headers["Authorization"]) {
-          config.headers["Authorization"] = `Bearer ${auth.token}`;
+        if (!config.headers["Authorization"]) {
+          config.headers["Authorization"] = `Bearer ${auth?.token}`;
         }
         return config;
       },
-      (err) => Promise.reject(err)
+      (error) => {
+        Promise.reject(error);
+      }
     );
 
-    const responseInterceptor = axiosPrivate.interceptors.response.use(
-      (res) => res,
-      async (err) => {
-        console.log("refreshing token ...");
-        const prevRequest = err?.config;
-        if (err?.response?.status === 403 && !prevRequest?.sent) {
+    const responseIntercept = axiosPrivate.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const prevRequest = error?.config;
+        if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
-          prevRequest.headers["Auhtoriztion"] = `Bearer ${newAccessToken}`;
+          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return axiosPrivate(prevRequest);
         }
-        return Promise.reject(err);
+        return Promise.reject(error);
       }
     );
 
     return () => {
-      axiosPrivate.interceptors.request.eject(requestInterceptor);
-      axiosPrivate.interceptors.response.eject(responseInterceptor);
+      axiosPrivate.interceptors.request.eject(requestIntercept);
+      axiosPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [refresh, auth]);
+  }, [auth, refresh]);
 
   return axiosPrivate;
 };
+
 export default useAxiosPrivate;

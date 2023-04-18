@@ -1,26 +1,35 @@
-import { useEffect, useState } from "react";
-import UserService from "../api/user.service";
-import useAuth from "../hooks/useAuth";
+import { useEffect, useRef, useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useRefreshToken from "../hooks/useRefreshToken";
-
+import { useLocation, useNavigate } from "react-router-dom";
 const Dashboard = () => {
-  const { auth } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  const [refreshing, setRefreshing] = useState(false);
-  const [users, setUsers] = useState([
-    { id: 1, username: "username", roles: ["admin", "user"] },
-  ]);
-  const loadUsers = () => {
-    axiosPrivate.get("/users").then((res) => {
-      setUsers(res.data);
-      setRefreshing(false);
-    });
-  };
+  const [users, setUsers] = useState([]);
+  const effectMout = useRef(false);
   useEffect(() => {
-    UserService.getUsers(auth?.token).then((res) => setUsers(res.data));
+    let isMounted = true;
+    const controller = new AbortController();
+    if (effectMout.current) {
+      axiosPrivate
+        .get("/users", { signal: controller.signal })
+        .then((res) => {
+          if (isMounted) {
+            setUsers(res.data);
+            setRefreshing(false);
+          }
+        })
+        .catch((err) => {
+          if (Object.keys(err).length) {
+            navigate("/login", { state: { from: location }, replace: true });
+          }
+        });
+    }
+
     return () => {
-      setUsers([]);
+      isMounted = false;
+      controller.abort("aborted");
+      effectMout.current = true;
     };
   }, []);
 
@@ -44,18 +53,6 @@ const Dashboard = () => {
               </li>
             ))}
         </ul>
-      </div>
-      <div className="mt-8">
-        <p>{refreshing && <span>refreshing ...</span>}</p>
-
-        <button
-          className="mt-4h-10 w-52 rounded-sm bg-slate-500 "
-          onClick={() => {
-            loadUsers(), setRefreshing(true);
-          }}
-        >
-          refresh
-        </button>
       </div>
     </div>
   );

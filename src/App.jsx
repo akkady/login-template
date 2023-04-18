@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import NoMatch from "./components/NoMatch";
 import Register from "./components/Register";
 import RequireAuth, { ROLES } from "./utils/RequireAuth";
+import PersistLogin from "./components/PersistLogin";
 
 function App() {
   return (
@@ -18,15 +19,20 @@ function App() {
       <Route path="unauthorized" element={<Register />} />
       <Route path="*" element={<NoMatch />} />
       {/* private routes */}
-      <Route element={<RequireAuth allowedRoles={[ROLES.user, ROLES.admin]} />}>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route element={<RequireAuth allowedRoles={[ROLES.admin]} />}>
-            <Route path="dashboard" element={<Dashboard />} />
+      <Route element={<PersistLogin />}>
+        <Route
+          element={<RequireAuth allowedRoles={[ROLES.user, ROLES.admin]} />}
+        >
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route element={<RequireAuth allowedRoles={[ROLES.admin]} />}>
+              <Route path="dashboard" element={<Dashboard />} />
+            </Route>
           </Route>
         </Route>
       </Route>
+
       {/* invalid routes */}
       <Route path="*" element={<NoMatch />} />
     </Routes>

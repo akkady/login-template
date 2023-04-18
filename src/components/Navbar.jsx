@@ -15,6 +15,7 @@ import {
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
+import useLogout from "../hooks/useLogout";
 
 const products = [
   {
@@ -58,6 +59,7 @@ function classNames(...classes) {
 }
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const logout = useLogout();
 
   return (
     <header className="bg-white shadow-md">
@@ -106,12 +108,12 @@ const Navbar = () => {
           </Link>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link
-            to="/login"
+          <button
+            onClick={logout}
             className="text-sm font-semibold leading-6 text-gray-900"
           >
             Log out <span aria-hidden="true">&rarr;</span>
-          </Link>
+          </button>
         </div>
       </nav>
       <Dialog
@@ -143,7 +145,7 @@ const Navbar = () => {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
+                {/* <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
                       <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 hover:bg-gray-50">
@@ -170,7 +172,7 @@ const Navbar = () => {
                       </Disclosure.Panel>
                     </>
                   )}
-                </Disclosure>
+                </Disclosure> */}
 
                 <Link
                   to="/"
@@ -192,12 +194,12 @@ const Navbar = () => {
                 </Link>
               </div>
               <div className="py-6">
-                <Link
-                  to="/login"
+                <button
+                  onClick={logout}
                   className="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Log out
-                </Link>
+                </button>
               </div>
             </div>
           </div>
