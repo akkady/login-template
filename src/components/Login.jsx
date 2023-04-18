@@ -6,18 +6,16 @@ import UserService from "../api/user.service";
 import { SignInSchema } from "../utils/validation";
 import useAuth from "../hooks/useAuth";
 import jwtDecode from "jwt-decode";
+import useToggle from "../hooks/useToggle";
 
 const Login = () => {
-  const { setAuth, setPersist, persist } = useAuth();
+  const { setAuth } = useAuth();
+  const [check, toggle] = useToggle("persist", false);
   const [alert, setAlert] = useState({ show: false, msg: "" });
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-
-  const toggleRememberMe = (e) => {
-    setPersist(e?.target?.checked);
-  };
 
   const logIn = (data) => {
     UserService.login(data)
@@ -42,9 +40,6 @@ const Login = () => {
         });
       });
   };
-  useEffect(() => {
-    localStorage.setItem("persist", persist);
-  }, [persist]);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -175,8 +170,8 @@ const Login = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <input
-                        defaultChecked={persist}
-                        onChange={toggleRememberMe}
+                        defaultChecked={check}
+                        onChange={toggle}
                         id="remember-me"
                         name="remember-me"
                         type="checkbox"

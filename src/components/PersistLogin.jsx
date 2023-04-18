@@ -6,7 +6,8 @@ import useRefreshToken from "../hooks/useRefreshToken";
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
-  const { auth, persist } = useAuth();
+  const [persist] = useLocalStorage("persist", false);
+  const { auth } = useAuth();
 
   useEffect(() => {
     let isMounted = true;
