@@ -24,10 +24,8 @@ const Login = () => {
           .getAuthorization()
           ?.replace("Bearer ", "");
         const refresh_token = res.headers.get("X-Refresh-token");
-        const decoded = jwtDecode(acces_token);
+
         setAuth({
-          username: decoded.sub,
-          roles: decoded.roles,
           token: acces_token,
         });
         sessionStorage.setItem("refresh", refresh_token);

@@ -13,18 +13,9 @@ const useRefreshToken = () => {
       },
     });
     const acces_token = response?.data?.access_token;
-    if (auth.username) {
-      setAuth((prev) => {
-        return { ...prev, token: acces_token };
-      });
-    } else {
-      const decoded = jwtDecode(acces_token);
-      setAuth({
-        username: decoded.sub,
-        roles: decoded.roles,
-        token: acces_token,
-      });
-    }
+    setAuth({
+      token: acces_token,
+    });
     console.log("refreshing token ...");
     return response?.data?.access_token;
   };
